@@ -71,12 +71,12 @@ Out of the box mapdiff finds what uses what by name. To also find methods called
 | TypeScript, JavaScript | scip-typescript | `npm install -g @sourcegraph/scip-typescript` |
 | Python | scip-python | `npm install -g @sourcegraph/scip-python` |
 
-Then run `mapdiff index` once in a repository. See [languages and references](../../reference/languages/).
+Then start mapdiff with `mapdiff --index`, or press **Index** above the map. See [languages and references](../../reference/languages/).
 
 ## Uninstall
 
 Remove it the way you installed it: `brew uninstall mapdiff`, `cargo uninstall mapdiff`, `npm uninstall -g mapdiff-cli` or `uv tool uninstall mapdiff`.
 
-mapdiff keeps indexes in your cache folder (`~/Library/Caches/mapdiff` on macOS, `~/.cache/mapdiff` on Linux) and review marks in each repository's `.git/mapdiff/`.
+Before that, `mapdiff clean` removes everything mapdiff has written: its cache folder (`~/Library/Caches/mapdiff` on macOS, `~/.cache/mapdiff` on Linux), and the review marks and fetched pull requests in each repository's `.git`.
 
 Next: the [quick start](../quick-start/).

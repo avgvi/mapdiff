@@ -240,6 +240,27 @@ export function fetchMap(level: string, target: Target | null): Promise<import('
   return request(`/api/map?${mapParams(target, { level })}`)
 }
 
+/** How references are found for what the map shows. */
+export interface References {
+  /** From names only, from an index for every project, or for some. */
+  by: 'name' | 'type' | 'mixed'
+  /** Whether making an index could add something. */
+  can_index: boolean
+  /** Set while the indexers are running. */
+  indexing: { step: string; seconds: number } | null
+  /** Why the last run left a project without an index. */
+  notes: string[]
+}
+
+export function fetchReferences(target: Target | null): Promise<References> {
+  return request(`/api/references?${mapParams(target)}`)
+}
+
+/** Starts the language indexers in the background. */
+export function startIndexing(): Promise<{ started: boolean }> {
+  return request('/api/index', { method: 'POST' })
+}
+
 export interface PullRequest {
   number: number
   title: string | null

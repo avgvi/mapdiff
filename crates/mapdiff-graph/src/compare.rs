@@ -23,6 +23,28 @@ pub struct Checkout {
 
 struct Temporary(PathBuf);
 
+/// What the name of every temporary copy starts with.
+const TEMPORARY_PREFIX: &str = "mapdiff-side-";
+
+/// Removes every temporary copy of a side that is still in the system's
+/// temporary folder, and says how many there were. One is left behind when
+/// a server is killed before it can remove its own.
+pub fn remove_temporary_copies() -> usize {
+    let Ok(entries) = std::fs::read_dir(std::env::temp_dir()) else {
+        return 0;
+    };
+    entries
+        .flatten()
+        .filter(|entry| {
+            entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with(TEMPORARY_PREFIX)
+        })
+        .filter(|entry| std::fs::remove_dir_all(entry.path()).is_ok())
+        .count()
+}
+
 impl Drop for Temporary {
     fn drop(&mut self) {
         let _ = std::fs::remove_dir_all(&self.0);
@@ -49,7 +71,8 @@ pub fn checkout(repo: &Repo, side: &Side, precise: Precise) -> Result<Checkout, 
     let unique = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_or(0, |elapsed| elapsed.as_nanos());
-    let root = std::env::temp_dir().join(format!("mapdiff-side-{}-{unique}", std::process::id()));
+    let root =
+        std::env::temp_dir().join(format!("{TEMPORARY_PREFIX}{}-{unique}", std::process::id()));
     // Made before the export, so that a failed export is cleaned up too.
     let temporary = Temporary(root.clone());
     repo.export(side, &root)?;

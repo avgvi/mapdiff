@@ -24,6 +24,13 @@ pub struct Live {
     pub graph: Graph,
 }
 
+impl Live {
+    /// A graph, and the stamp of the files it was built from.
+    pub fn new(stamp: u64, graph: Graph) -> Self {
+        Self { stamp, graph }
+    }
+}
+
 /// A comparison with both of its sides on disk and their graphs. Kept
 /// while the page keeps asking about the same comparison.
 pub struct Shown {
@@ -112,6 +119,7 @@ pub fn shown(state: &AppState, query: &DiffQuery) -> Result<Arc<Shown>, ApiError
     {
         return Ok(shown.clone());
     }
+    state.note_showing(&query.describe());
     let loaded = load(state, query)?;
     let compared = mapdiff_graph::compare(
         &state.repo,

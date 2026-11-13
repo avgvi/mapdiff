@@ -31,11 +31,11 @@ use mapdiff_core::{Position, RefKind, Reference, ReferenceGraph, ScopeKind, Scop
 use mapdiff_extract::Grammar;
 use rayon::prelude::*;
 
-pub use compare::{Checkout, Compared, checkout, compare, comparison_map};
+pub use compare::{Checkout, Compared, checkout, compare, comparison_map, remove_temporary_copies};
 pub use impact::{Affected, ImpactOptions, ImpactReport, Impacted, Reason, impact};
 pub use map::{Cause, MapContainer, MapData, MapNode, MapWire, Overlay, Presence, union};
 pub use ops::{ContainerWires, EntryPoint, ExitPoint, Level, Lifted, Lifter, View};
-pub use precise::{Outcome, Precise, TierReport};
+pub use precise::{Outcome, Precise, TierReport, cache_home};
 pub use scip_import::{ImportStats, describe as describe_scip};
 
 use facts::Facts;

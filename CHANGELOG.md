@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- **`mapdiff --index`** runs the language indexers in the background. The map opens straight away and gains references when they finish; after files change, they run again the next time the page is loaded.
+- **The bar above the map says how references are found:** by name, indexing, or by type, with an **Index** button and a note when an indexer is not installed.
+- **`mapdiff list`** shows every running server: its repository, address, the change it last drew, and how long it has been up.
+- **`mapdiff stop`** stops the server of the repository you are in, and `--all` stops every one.
+- **`mapdiff clean`** stops every server and removes everything mapdiff has written: review marks, fetched pull requests, temporary copies of files and the cache folder.
+- A server stopped with `kill` now removes its temporary files, as one stopped with Ctrl-C does.
+
 ## 0.1.0 - 2026-11-13
 
 The first version.

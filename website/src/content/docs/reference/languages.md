@@ -20,7 +20,15 @@ There are two ways mapdiff finds what uses what.
 
 **By name**, always on. It follows imports and resolves the names a file uses: a function called, a type used, a class extended. It takes well under a second and is almost never wrong about what it finds. It cannot find a method called on a value (`client.send()`), because that needs the type of `client`.
 
-**By type**, after `mapdiff index`. This runs the language's own indexer (rust-analyzer, scip-typescript, scip-python) and adds what only types can tell. The result is kept until a file changes.
+**By type**, with an index. The language's own indexer (rust-analyzer, scip-typescript, scip-python) adds what only types can tell. It can take minutes on a large project, and its result is kept until a file changes. There are three ways to make one:
+
+| How | What happens |
+|---|---|
+| `mapdiff --index` | The map opens straight away, the indexers run in the background, and the map gains references when they finish. After you change files, they run again the next time the page is loaded |
+| **Index**, in the bar above the map | The same, started from the page |
+| `mapdiff index` | Runs them in the terminal and waits. For a script, or to have an index ready before opening the map |
+
+The bar above the map says which you are looking at: **References: by name**, **indexing…** or **by type**. If an indexer is not installed, it says so there, with how to get it.
 
 Measured on four open-source repositories:
 

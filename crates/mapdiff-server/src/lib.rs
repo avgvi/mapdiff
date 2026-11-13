@@ -1,11 +1,15 @@
 //! The local HTTP API the reviewer page talks to, and the page itself.
 //!
-//! It listens on the loopback address only, reads the repository it was
-//! started in, and writes nothing except review marks under `.git/mapdiff/`.
+//! It listens on the loopback address only and reads the repository it was
+//! started in. In the repository it writes review marks under
+//! `.git/mapdiff/`; outside it, a note that it is running and any indexes
+//! it is asked to make, in mapdiff's cache folder.
 
 mod detail;
 mod explore;
+mod indexing;
 mod reviewed;
+pub mod running;
 
 use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
@@ -32,6 +36,11 @@ pub struct ServerOptions {
     pub port: u16,
     /// Where the built page is. `None` uses the default location.
     pub ui_dir: Option<PathBuf>,
+    /// What it was started to show, for `mapdiff list`.
+    pub showing: String,
+    /// Run the language indexers in the background, now and whenever the
+    /// page asks again after files changed.
+    pub index: bool,
 }
 
 pub struct AppState {
@@ -46,6 +55,11 @@ pub struct AppState {
     live: Mutex<Option<Arc<explore::Live>>>,
     /// The last comparison drawn on the map, with both sides on disk.
     shown: Mutex<Option<Arc<explore::Shown>>>,
+    indexing: Mutex<indexing::Indexing>,
+    /// Whether the indexers are started without being asked.
+    auto_index: bool,
+    /// The note that this server is running, once it is listening.
+    announced: Mutex<Option<running::Running>>,
 }
 
 struct Loaded {
@@ -64,7 +78,21 @@ impl AppState {
             cache: Mutex::new(None),
             live: Mutex::new(None),
             shown: Mutex::new(None),
+            indexing: Mutex::default(),
+            auto_index: false,
+            announced: Mutex::new(None),
         })
+    }
+
+    /// Keeps the note of this server saying what it draws now.
+    fn note_showing(&self, showing: &str) {
+        let mut announced = self.announced.lock().unwrap();
+        if let Some(running) = announced.as_mut()
+            && running.showing != showing
+        {
+            running.showing = showing.to_owned();
+            running::announce(&mapdiff_graph::cache_home(), running);
+        }
     }
 }
 
@@ -115,6 +143,32 @@ impl DiffQuery {
             "{:?}|{:?}|{}|{}",
             self.spec, self.commit, self.staged, self.w
         )
+    }
+
+    /// The comparison in a few words, for `mapdiff list`.
+    fn describe(&self) -> String {
+        let given = |text: &Option<String>| {
+            text.as_deref()
+                .map(str::trim)
+                .filter(|text| !text.is_empty())
+                .map(str::to_owned)
+        };
+        if let Some(commit) = given(&self.commit) {
+            return format!("commit {}", commit.chars().take(7).collect::<String>());
+        }
+        if self.staged {
+            return String::from("staged");
+        }
+        match given(&self.spec) {
+            // A fetched pull request is compared by the refs it was kept under.
+            Some(spec) => match spec.rsplit_once("refs/mapdiff/pr/") {
+                Some((_, number)) if number.chars().all(|digit| digit.is_ascii_digit()) => {
+                    format!("pull request {number}")
+                }
+                _ => spec,
+            },
+            None => String::from("uncommitted"),
+        }
     }
 }
 
@@ -437,6 +491,9 @@ pub fn router(state: Arc<AppState>, ui_dir: Option<&Path>) -> Router {
         .route("/search", get(explore::search))
         .route("/pr", axum::routing::post(explore::pull_request))
         .route("/source", get(source))
+        .route("/running", get(running_now))
+        .route("/references", get(indexing::references))
+        .route("/index", axum::routing::post(indexing::index))
         .fallback(|| async { ApiError(StatusCode::NOT_FOUND, String::from("no such API route")) })
         .with_state(state);
 
@@ -508,12 +565,41 @@ pub fn ui_dir_override() -> Option<PathBuf> {
     std::env::var_os("MAPDIFF_UI_DIR").map(PathBuf::from)
 }
 
-/// Starts the server and blocks until it is stopped with Ctrl-C. `ready` is
-/// called with the address once it is listening.
+/// Which process this is and which repository it reads, so that a note of
+/// a running server can be checked against what answers on its port.
+async fn running_now(State(state): State<Arc<AppState>>) -> Json<serde_json::Value> {
+    Json(serde_json::json!({
+        "pid": std::process::id(),
+        "repo": state.repo.root().to_string_lossy(),
+    }))
+}
+
+/// Ends when the server is asked to stop: Ctrl-C, or the signal `kill`
+/// sends by default.
+async fn asked_to_stop() {
+    #[cfg(unix)]
+    {
+        use tokio::signal::unix::{SignalKind, signal};
+        if let Ok(mut terminate) = signal(SignalKind::terminate()) {
+            tokio::select! {
+                _ = tokio::signal::ctrl_c() => {}
+                _ = terminate.recv() => {}
+            }
+            return;
+        }
+    }
+    let _ = tokio::signal::ctrl_c().await;
+}
+
+/// Starts the server and blocks until it is stopped with Ctrl-C or by
+/// `mapdiff stop`. `ready` is called with the address once it is listening.
 pub fn serve(options: ServerOptions, ready: impl FnOnce(&str)) -> Result<(), String> {
-    let state = Arc::new(AppState::new(&options.repo)?);
+    let mut state = AppState::new(&options.repo)?;
+    state.auto_index = options.index;
+    let state = Arc::new(state);
     let ui_dir = options.ui_dir.or_else(ui_dir_override);
-    let app = router(state, ui_dir.as_deref());
+    let app = router(state.clone(), ui_dir.as_deref());
+    let home = mapdiff_graph::cache_home();
 
     let runtime = tokio::runtime::Runtime::new().map_err(|err| err.to_string())?;
     runtime.block_on(async move {
@@ -529,13 +615,25 @@ pub fn serve(options: ServerOptions, ready: impl FnOnce(&str)) -> Result<(), Str
         }
         let listener = listener.ok_or_else(|| format!("no free port from {} up", options.port))?;
         let address = listener.local_addr().map_err(|err| err.to_string())?;
+
+        let running = running::Running::new(address.port(), state.repo.root(), &options.showing);
+        running::announce(&home, &running);
+        running::remember_repository(&home, state.repo.root());
+        *state.announced.lock().unwrap() = Some(running);
+        if options.index {
+            indexing::start(&state);
+        }
         ready(&format!("http://127.0.0.1:{}", address.port()));
 
-        axum::serve(listener, app)
-            .with_graceful_shutdown(async {
-                let _ = tokio::signal::ctrl_c().await;
-            })
+        let served = axum::serve(listener, app)
+            .with_graceful_shutdown(asked_to_stop())
             .await
-            .map_err(|err| err.to_string())
+            .map_err(|err| err.to_string());
+
+        running::withdraw(&home, std::process::id());
+        // A running indexer keeps the state alive past this point, so the
+        // temporary copy of a comparison is let go of here.
+        *state.shown.lock().unwrap() = None;
+        served
     })
 }

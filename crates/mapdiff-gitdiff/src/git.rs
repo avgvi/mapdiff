@@ -403,6 +403,19 @@ impl Repo {
             .collect()
     }
 
+    /// Removes every ref mapdiff made in this repository (the pull
+    /// requests it fetched, under `refs/mapdiff/`) and says how many.
+    pub fn remove_own_refs(&self) -> Result<usize, Error> {
+        let listed = self.run(&["for-each-ref", "--format=%(refname)", "refs/mapdiff/"])?;
+        let listed = String::from_utf8_lossy(&listed);
+        let mut removed = 0;
+        for name in listed.lines().filter(|name| !name.is_empty()) {
+            self.run(&["update-ref", "-d", name])?;
+            removed += 1;
+        }
+        Ok(removed)
+    }
+
     /// The repository's `.git` directory, for files that belong to this
     /// clone and must never be committed.
     pub fn git_dir(&self) -> Result<PathBuf, Error> {
