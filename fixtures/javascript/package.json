@@ -1,0 +1,10 @@
+{
+  "name": "mapdiff-fixture-js",
+  "version": "0.0.0",
+  "private": true,
+  "main": "lib/app.js",
+  "exports": {
+    ".": "./lib/app.js",
+    "./esm": "./esm/index.mjs"
+  }
+}

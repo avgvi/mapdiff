@@ -1,0 +1,33 @@
+/* The green of the mark as the accent, on the navy of the banner. */
+:root {
+	--sl-color-accent-low: #123a22;
+	--sl-color-accent: #1f9a4c;
+	--sl-color-accent-high: #a6f0c0;
+	--sl-color-black: #0e1726;
+	--sl-color-gray-6: #152033;
+	--sl-color-gray-5: #243149;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #d5f3df;
+	--sl-color-accent: #16873f;
+	--sl-color-accent-high: #0b4a22;
+	--sl-color-black: #ffffff;
+	--sl-color-gray-6: #eef1f4;
+	--sl-color-gray-5: #c5ccd6;
+}
+
+/* Headings in the wordmark's face. */
+h1,
+h2,
+h3,
+.hero h1 {
+	font-family: 'Space Grotesk Variable', var(--sl-font);
+	letter-spacing: -0.02em;
+}
+
+/* Screenshots keep their own corners, with a line to set them off the page. */
+.sl-markdown-content img {
+	border-radius: 6px;
+	border: 1px solid var(--sl-color-gray-5);
+}

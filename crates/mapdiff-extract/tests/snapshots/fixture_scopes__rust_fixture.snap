@@ -1,0 +1,82 @@
+---
+source: crates/mapdiff-extract/tests/fixture_scopes.rs
+expression: "tree(\"rust\").render_text()"
+---
+. [directory]
+  Cargo.toml [document] L1-8
+  src [directory]
+    src/lib.rs [file] L1-99
+      mod shapes [mod -> module] public L6-7
+      mod units [mod -> module] private L8-9
+      {import.1} [use -> import] private L11-12
+      {import.2} [use -> import] private L13-14
+      {import.3} [use -> import] private L15-16
+      {import.4} [use -> import] public L17-18
+      MAX_SHAPES [const -> constant] public L20-21
+      REGISTRY_NAME [static -> constant] private L23-24
+      ShapeMap [type -> type_alias] public L26-27
+      make_id! [macro_rules! -> macro] private L29-34
+      {block.1} [macro call -> block] private L36-37
+      total_area() [fn -> function] public L39-47
+      largest() [fn -> function] restricted L49-58
+      load_count() [fn -> function] public +async L60-63
+      registry_name() [fn -> function] public L65-70
+      mod registry [mod -> module] private L72-87
+        {import.1} [use -> import] private L74-74
+        empty() [fn -> function] restricted L76-79
+        mod nested [mod -> module] public L81-86
+          depth() [fn -> function] public L83-85
+      mod tests [mod -> module] private +test L89-99
+        {import.1} [use -> import] private +test L92-92
+        largest_of_empty_is_none() [fn -> function] private +test L94-98
+    src/shapes.rs [file] L1-147
+      {import.1} [use -> import] private L3-3
+      {import.2} [use -> import] private L5-5
+      Shape [trait -> interface] public L7-16
+        area() [fn -> method] public L9-10
+        describe() [fn -> method] public L12-15
+      Named [trait -> interface] public L18-26
+        KIND [const -> constant] public L19-20
+        Label [type -> type_alias] public L22-23
+        label() [fn -> method] public L25-25
+      Circle [struct -> class] public L28-37
+        radius [field] public L31-32
+        unit [field] restricted L33-34
+        id [field] private L35-36
+      Meters [struct -> class] public L39-40
+      Origin [struct -> class] public L42-43
+      Bits [union -> class] public L45-49
+        int [field] public L47-47
+        float [field] public L48-48
+      Polygon [enum] public L51-59
+        Triangle [variant] public L53-54
+        Regular [variant] public L55-56
+        Rect [variant] public L57-58
+      impl Circle [impl] public L61-86
+        new() [fn -> constructor] public L63-70
+        diameter() [fn -> method] public L72-75
+        kind_name() [fn -> method] public L77-80
+        bump() [fn -> method] private L82-85
+      impl Circle#2 [impl] public L88-98
+        scaled() [fn -> method] public L90-97
+      impl Shape for Circle [impl] public L100-105
+        area() [fn -> method] public L102-104
+      impl Named for Circle [impl] public L107-116
+        KIND [const -> constant] public L109-109
+        Label [type -> type_alias] public L111-111
+        label() [fn -> method] public L113-115
+      impl<T: Shape> Shape for Vec<T> [impl] public L118-123
+        area() [fn -> method] public L120-122
+      impl fmt::Display for Polygon [impl] public L125-134
+        fmt() [fn -> method] public L127-133
+      Tagged [struct -> class] public L136-140
+        tag [field] public L138-138
+        value [field] public L139-139
+      impl<'a, T: Clone> Tagged<'a, T> [impl] public L142-147
+        value() [fn -> method] public L144-146
+    src/units.rs [file] L1-18
+      Unit [enum] public L3-8
+        Meter [variant] public L6-6
+        Foot [variant] public L7-7
+      impl Unit [impl] public L10-18
+        factor() [fn -> method] public +const L11-17

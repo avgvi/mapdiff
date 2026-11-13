@@ -1,0 +1,192 @@
+---
+source: crates/mapdiff-gitdiff/tests/comparisons.rs
+expression: changes
+---
+{
+  "schema_version": 1,
+  "base": {
+    "label": "HEAD^",
+    "commit": null
+  },
+  "head": {
+    "label": "HEAD",
+    "commit": null
+  },
+  "ignore_whitespace": false,
+  "stats": {
+    "files": 1,
+    "scopes": 1,
+    "added": 1,
+    "removed": 1
+  },
+  "changes": [
+    {
+      "state": "modified",
+      "kinds": [],
+      "kind": "directory",
+      "lang_kind": "directory",
+      "label": ".",
+      "old_label": null,
+      "name": null,
+      "access": "public",
+      "old_id": ".",
+      "new_id": ".",
+      "counterpart": null,
+      "old_path": null,
+      "new_path": null,
+      "own": {
+        "added": 0,
+        "removed": 0
+      },
+      "total": {
+        "added": 1,
+        "removed": 1
+      },
+      "moved_delta": null,
+      "old_range": null,
+      "new_range": null,
+      "fingerprint": "",
+      "parent": null,
+      "children": [
+        1
+      ]
+    },
+    {
+      "state": "modified",
+      "kinds": [],
+      "kind": "directory",
+      "lang_kind": "directory",
+      "label": "src",
+      "old_label": null,
+      "name": null,
+      "access": "public",
+      "old_id": "src",
+      "new_id": "src",
+      "counterpart": null,
+      "old_path": null,
+      "new_path": null,
+      "own": {
+        "added": 0,
+        "removed": 0
+      },
+      "total": {
+        "added": 1,
+        "removed": 1
+      },
+      "moved_delta": null,
+      "old_range": null,
+      "new_range": null,
+      "fingerprint": "",
+      "parent": 0,
+      "children": [
+        2
+      ]
+    },
+    {
+      "state": "modified",
+      "kinds": [],
+      "kind": "file",
+      "lang_kind": "file",
+      "label": "lib.rs",
+      "old_label": null,
+      "name": "lib.rs",
+      "access": "public",
+      "old_id": "src/lib.rs",
+      "new_id": "src/lib.rs",
+      "counterpart": null,
+      "old_path": "src/lib.rs",
+      "new_path": "src/lib.rs",
+      "own": {
+        "added": 0,
+        "removed": 0
+      },
+      "total": {
+        "added": 1,
+        "removed": 1
+      },
+      "moved_delta": null,
+      "old_range": {
+        "start_byte": 0,
+        "end_byte": 108,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 7,
+          "column": 0
+        }
+      },
+      "new_range": {
+        "start_byte": 0,
+        "end_byte": 108,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 7,
+          "column": 0
+        }
+      },
+      "fingerprint": "508e2cf342203495",
+      "parent": 1,
+      "children": [
+        3
+      ]
+    },
+    {
+      "state": "modified",
+      "kinds": [
+        "signature"
+      ],
+      "kind": "function",
+      "lang_kind": "fn",
+      "label": "add()",
+      "old_label": null,
+      "name": "add",
+      "access": "public",
+      "old_id": "src/lib.rs::add()",
+      "new_id": "src/lib.rs::add()",
+      "counterpart": null,
+      "old_path": "src/lib.rs",
+      "new_path": "src/lib.rs",
+      "own": {
+        "added": 1,
+        "removed": 1
+      },
+      "total": {
+        "added": 1,
+        "removed": 1
+      },
+      "moved_delta": null,
+      "old_range": {
+        "start_byte": 0,
+        "end_byte": 47,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 1
+        }
+      },
+      "new_range": {
+        "start_byte": 0,
+        "end_byte": 47,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 1
+        }
+      },
+      "fingerprint": "c8dd4e324cedef89",
+      "parent": 2,
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" fill="none">
+  <rect width="1600" height="600" rx="30" fill="#0E1726"/>
+  <!-- A faint map behind everything: boxes in boxes, joined by wires. -->
+  <g stroke="#1D2A40" stroke-width="2.5">
+    <rect x="60" y="64" width="330" height="200" rx="16"/>
+    <rect x="88" y="112" width="120" height="44" rx="9"/>
+    <rect x="88" y="184" width="120" height="44" rx="9"/>
+    <rect x="252" y="148" width="110" height="44" rx="9"/>
+    <path d="M208 134h22v36h22M208 206h22v-36"/>
+    <rect x="1210" y="64" width="330" height="200" rx="16"/>
+    <rect x="1238" y="148" width="110" height="44" rx="9"/>
+    <rect x="1392" y="112" width="120" height="44" rx="9"/>
+    <rect x="1392" y="184" width="120" height="44" rx="9"/>
+    <path d="M1348 170h22v-36h22M1370 170v36h22"/>
+    <rect x="60" y="420" width="250" height="120" rx="16"/>
+    <rect x="88" y="462" width="90" height="40" rx="9"/>
+    <rect x="198" y="462" width="84" height="40" rx="9"/>
+    <path d="M178 482h20"/>
+    <rect x="1290" y="420" width="250" height="120" rx="16"/>
+    <rect x="1318" y="462" width="84" height="40" rx="9"/>
+    <rect x="1422" y="462" width="90" height="40" rx="9"/>
+    <path d="M1402 482h20"/>
+    <path d="M390 164h70M1140 164h70M310 480h90M1200 480h90"/>
+  </g>
+  <!-- The change: one box on each side, lit. -->
+  <rect x="252" y="148" width="110" height="44" rx="9" fill="#5EE08A" fill-opacity="0.16" stroke="#5EE08A" stroke-width="2.5"/>
+  <rect x="1392" y="184" width="120" height="44" rx="9" fill="#F2B84B" fill-opacity="0.14" stroke="#F2B84B" stroke-width="2.5"/>
+  <rect x="198" y="462" width="84" height="40" rx="9" fill="#5EE08A" fill-opacity="0.16" stroke="#5EE08A" stroke-width="2.5"/>
+  <g transform="translate(470 170) scale(2.2)" fill="none">
+    <rect x="5" y="5" width="54" height="54" rx="11" stroke="#FFFFFF" stroke-width="3.4"/>
+    <rect x="13" y="21" width="14" height="22" rx="4" stroke="#FFFFFF" stroke-width="3.4"/>
+    <rect x="37" y="21" width="14" height="22" rx="4" fill="#5EE08A"/>
+    <path d="M27 32h7" stroke="#5EE08A" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M31.5 28.5 35 32l-3.5 3.5" stroke="#5EE08A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="640" y="290" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="700" font-size="150" letter-spacing="-4" fill="#FFFFFF">mapdiff</text>
+  <text x="648" y="340" font-family="SF Mono, Menlo, Consolas, monospace" font-size="24" letter-spacing="9" fill="#9FB0C6">REVIEW A CHANGE ON A MAP</text>
+  <text x="800" y="440" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="500" font-size="38" fill="#E7EDF5">See what changed, where it sits, and what it touches</text>
+</svg>

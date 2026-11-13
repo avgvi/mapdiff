@@ -1,0 +1,101 @@
+---
+source: crates/mapdiff-extract/tests/fixture_scopes.rs
+expression: "tree(\"typescript\").render_text()"
+---
+. [directory]
+  src [directory]
+    src/Badge.tsx [file] L1-30
+      {import.1} [import] private L1-1
+      BadgeProps [interface] private L3-7
+        shape [property -> field] private L5-5
+        onSelect [property -> field] private L6-6
+      Badge() [function] public +default-export L9-16
+      BadgeList() [const -> function] public L18-27
+    src/describe.ts [file] L1-6
+      {import.1} [import] private L1-1
+      {default} [function] public +default-export L3-6
+    src/index.ts [file] L1-12
+      {import.1} [export from -> import] public L3-4
+      {import.2} [export from -> import] public L5-6
+      {import.3} [export from -> import] public L7-8
+      {import.4} [export from -> import] public L9-10
+      {import.5} [export from -> import] public L11-12
+    src/jsx.d.ts [file] L1-12
+      namespace JSX [namespace -> module] private +declare L3-12
+        Element [interface] private L5-7
+          __element [property -> field] private +readonly L6-6
+        IntrinsicElements [interface] private L9-11
+    src/models.ts [file] L1-129
+      {import.1} [import] private L5-6
+      {import.2} [import] private L7-8
+      Shape [interface] public L10-16
+        kind [property -> field] public +readonly L12-13
+        area() [method] public L14-15
+      Shape#2 [interface] public L18-21
+        label [property -> field] public L20-20
+      ShapeMap [type -> type_alias] public L23-24
+      Polygon [type -> type_alias] public L26-29
+      Color [enum] public L31-36
+        Red [member -> variant] public L33-34
+        Blue [member -> variant] public L35-35
+      Corner [enum] public L38-42
+        TopLeft [member -> variant] public L40-40
+        TopRight [member -> variant] public L41-41
+      BaseShape [class] public +abstract L44-74
+        label [property -> field] public L46-47
+        count [property -> field] public +static L49-50
+        unit [property -> field] restricted L52-53
+        #id [property -> field] private L55-56
+        kind [property -> field] public +abstract +readonly L58-59
+        area() [method] public +abstract L61-62
+        describe() [method] public L64-68
+        bump() [method] private L70-73
+      Circle [class] public L76-109
+        kind [property -> field] public +readonly L78-78
+        constructor() [constructor] public L80-88
+          radius [parameter property -> field] public L82-82
+        area() [method] public +override L90-93
+        get diameter() [getter -> method] public L95-98
+        set diameter() [setter -> method] public L100-103
+        unit() [method] public +static L105-108
+      namespace Geometry [namespace -> module] public L111-126
+        Point [interface] public L113-117
+          x [property -> field] public L115-115
+          y [property -> field] public L116-116
+        ORIGIN [const -> constant] public L119-120
+        distance() [function] public L122-125
+      __DEV__ [const -> constant] private +declare L128-129
+    src/service.ts [file] L1-32
+      {import.1} [import] private L1-2
+      {import.2} [import] private L3-4
+      {import.3} [import] private L5-6
+      {import.4} [import] private L7-8
+      ShapeService [class] public L10-29
+        shapes [property -> field] private L11-11
+        add() [method] public L13-17
+        total() [method] public L19-22
+        report() [method] public +async L24-28
+      service [const -> constant] public L31-32
+    src/setup.ts [file] L1-13
+      namespace global [declare global -> module] private +declare L3-8
+        Window [interface] private L5-7
+          __shapes [property -> field] private L6-6
+      {block.1} [statements -> block] private L10-10
+    src/units.ts [file] L1-63
+      UNITS [const -> constant] public L1-2
+      Unit [type -> type_alias] public L4-5
+      conversions [let -> constant] public L7-8
+      toMeters() [function] public L10-14
+      round() [function] private L16-19
+      format() [overload -> function] public L21-22
+      format()#2 [overload -> function] public L23-23
+      format()#3 [function] public L24-26
+      first() [function] public L28-31
+      double() [const -> function] public L33-34
+      triple() [const -> function] public L36-39
+      load() [function] public +async L41-44
+      steps() [function] public +generator L46-51
+      converter [const -> constant] public L53-60
+        feet() [method] public L55-57
+        meters() [method] public L58-59
+  tsconfig.json [document] L1-14

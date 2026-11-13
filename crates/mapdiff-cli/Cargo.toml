@@ -1,0 +1,28 @@
+[package]
+name = "mapdiff"
+description.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "mapdiff"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive"] }
+serde_json.workspace = true
+mapdiff-core.workspace = true
+mapdiff-extract.workspace = true
+mapdiff-gitdiff.workspace = true
+mapdiff-graph.workspace = true
+mapdiff-server.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,196 @@
+---
+source: crates/mapdiff-extract/tests/fixture_scopes.rs
+expression: tree
+---
+{
+  "schema_version": 1,
+  "scopes": [
+    {
+      "id": "pkg/_internal.py",
+      "path": {
+        "file": "pkg/_internal.py",
+        "segments": []
+      },
+      "kind": "file",
+      "lang_kind": "file",
+      "language": "python",
+      "name": "_internal.py",
+      "access": "public",
+      "modifiers": [],
+      "range": {
+        "start_byte": 0,
+        "end_byte": 250,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 11,
+          "column": 0
+        }
+      },
+      "name_range": null,
+      "header_range": {
+        "start_byte": 0,
+        "end_byte": 0,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 0,
+          "column": 0
+        }
+      },
+      "body_range": {
+        "start_byte": 0,
+        "end_byte": 250,
+        "start": {
+          "line": 0,
+          "column": 0
+        },
+        "end": {
+          "line": 11,
+          "column": 0
+        }
+      },
+      "signature": null,
+      "hashes": {
+        "text": "78d6a2292575ef8a",
+        "tokens": "93826cbe12901245",
+        "code": "34076d41f61f97c2",
+        "signature": "2d06800538d394c2",
+        "body": "34076d41f61f97c2"
+      },
+      "parent": null,
+      "children": [
+        "pkg/_internal.py::_clamp()",
+        "pkg/_internal.py::{block.1}"
+      ]
+    },
+    {
+      "id": "pkg/_internal.py::_clamp()",
+      "path": {
+        "file": "pkg/_internal.py",
+        "segments": [
+          "_clamp()"
+        ]
+      },
+      "kind": "function",
+      "lang_kind": "def",
+      "language": "python",
+      "name": "_clamp",
+      "access": "private",
+      "modifiers": [],
+      "range": {
+        "start_byte": 97,
+        "end_byte": 194,
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 6,
+          "column": 37
+        }
+      },
+      "name_range": {
+        "start_byte": 131,
+        "end_byte": 137,
+        "start": {
+          "line": 5,
+          "column": 4
+        },
+        "end": {
+          "line": 5,
+          "column": 10
+        }
+      },
+      "header_range": {
+        "start_byte": 97,
+        "end_byte": 156,
+        "start": {
+          "line": 4,
+          "column": 0
+        },
+        "end": {
+          "line": 5,
+          "column": 29
+        }
+      },
+      "body_range": {
+        "start_byte": 156,
+        "end_byte": 194,
+        "start": {
+          "line": 5,
+          "column": 29
+        },
+        "end": {
+          "line": 6,
+          "column": 37
+        }
+      },
+      "signature": "def _clamp(value, low, high):",
+      "hashes": {
+        "text": "900af91f05fc2072",
+        "tokens": "840ed105eb12f7ab",
+        "code": "7271aab18c36a54f",
+        "signature": "849baa82ac3ea267",
+        "body": "2c5177e6bd1acebd"
+      },
+      "parent": "pkg/_internal.py",
+      "children": []
+    },
+    {
+      "id": "pkg/_internal.py::{block.1}",
+      "path": {
+        "file": "pkg/_internal.py",
+        "segments": [
+          "{block.1}"
+        ]
+      },
+      "kind": "block",
+      "lang_kind": "statements",
+      "language": "python",
+      "name": null,
+      "access": "private",
+      "modifiers": [],
+      "range": {
+        "start_byte": 197,
+        "end_byte": 249,
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 10,
+          "column": 16
+        }
+      },
+      "name_range": null,
+      "header_range": {
+        "start_byte": 197,
+        "end_byte": 249,
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 10,
+          "column": 16
+        }
+      },
+      "body_range": null,
+      "signature": null,
+      "hashes": {
+        "text": "67b5cdab2034ec18",
+        "tokens": "4d7e8af261466089",
+        "code": "a4617c4feebfa68e",
+        "signature": "a4617c4feebfa68e",
+        "body": "2d06800538d394c2"
+      },
+      "parent": "pkg/_internal.py",
+      "children": []
+    }
+  ]
+}

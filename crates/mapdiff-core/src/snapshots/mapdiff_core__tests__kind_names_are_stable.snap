@@ -1,0 +1,86 @@
+---
+source: crates/mapdiff-core/src/lib.rs
+expression: "serde_json::json!({\n    \"schema_version\": SCHEMA_VERSION, \"kinds\": rows, \"access\":\n    [Access::Private, Access::Restricted, Access::Public],\n})"
+---
+{
+  "access": [
+    "private",
+    "restricted",
+    "public"
+  ],
+  "kinds": [
+    {
+      "container": true,
+      "kind": "directory"
+    },
+    {
+      "container": true,
+      "kind": "file"
+    },
+    {
+      "container": false,
+      "kind": "document"
+    },
+    {
+      "container": true,
+      "kind": "module"
+    },
+    {
+      "container": true,
+      "kind": "class"
+    },
+    {
+      "container": true,
+      "kind": "interface"
+    },
+    {
+      "container": true,
+      "kind": "enum"
+    },
+    {
+      "container": false,
+      "kind": "variant"
+    },
+    {
+      "container": false,
+      "kind": "type_alias"
+    },
+    {
+      "container": true,
+      "kind": "impl"
+    },
+    {
+      "container": false,
+      "kind": "function"
+    },
+    {
+      "container": false,
+      "kind": "method"
+    },
+    {
+      "container": false,
+      "kind": "constructor"
+    },
+    {
+      "container": false,
+      "kind": "field"
+    },
+    {
+      "container": false,
+      "kind": "constant"
+    },
+    {
+      "container": false,
+      "kind": "macro"
+    },
+    {
+      "container": false,
+      "kind": "import"
+    },
+    {
+      "container": false,
+      "kind": "block"
+    }
+  ],
+  "schema_version": 1
+}

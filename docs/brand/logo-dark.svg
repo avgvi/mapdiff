@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" fill="none">
+  <g transform="translate(8 8) scale(1.25)" fill="none">
+    <rect x="5" y="5" width="54" height="54" rx="11" stroke="#FFFFFF" stroke-width="3.4"/>
+    <rect x="13" y="21" width="14" height="22" rx="4" stroke="#FFFFFF" stroke-width="3.4"/>
+    <rect x="37" y="21" width="14" height="22" rx="4" fill="#5EE08A"/>
+    <path d="M27 32h7" stroke="#5EE08A" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M31.5 28.5 35 32l-3.5 3.5" stroke="#5EE08A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="104" y="68" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="700" font-size="62" letter-spacing="-1.5" fill="#FFFFFF">mapdiff</text>
+</svg>

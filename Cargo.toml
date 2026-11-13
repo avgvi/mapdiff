@@ -1,0 +1,40 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "Review a change on a map of your code: diffs by function and type, drawn with what they touch"
+license = "MIT"
+repository = "https://github.com/avgvi/mapdiff"
+readme = "README.md"
+keywords = ["code-review", "diff", "visualization", "tree-sitter", "cli"]
+categories = ["development-tools", "command-line-utilities", "visualization"]
+publish = false
+
+[workspace.dependencies]
+mapdiff-core = { path = "crates/mapdiff-core" }
+mapdiff-extract = { path = "crates/mapdiff-extract" }
+mapdiff-gitdiff = { path = "crates/mapdiff-gitdiff" }
+mapdiff-graph = { path = "crates/mapdiff-graph" }
+mapdiff-server = { path = "crates/mapdiff-server" }
+mapdiff-testkit = { path = "crates/mapdiff-testkit" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+insta = { version = "1", features = ["json"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+# Snapshot tests diff large strings; optimising these two crates keeps them fast.
+[profile.dev.package.insta]
+opt-level = 3
+
+[profile.dev.package.similar]
+opt-level = 3

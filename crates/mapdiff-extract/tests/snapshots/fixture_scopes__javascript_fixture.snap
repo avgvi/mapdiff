@@ -1,0 +1,64 @@
+---
+source: crates/mapdiff-extract/tests/fixture_scopes.rs
+expression: "tree(\"javascript\").render_text()"
+---
+. [directory]
+  esm [directory]
+    esm/Widget.jsx [file] L1-12
+      Widget() [function] public +default-export L1-9
+      Label() [const -> function] public L11-12
+    esm/index.mjs [file] L1-32
+      {import.1} [import] private L1-2
+      {import.2} [import] private L3-4
+      {import.3} [import] private L5-6
+      VERSION [const -> constant] public L8-9
+      readConfig() [function] public +async L11-14
+      {import.4} [export from -> import] public L16-17
+      {import.5} [export from -> import] public L18-19
+      {default} [function] public +default-export L21-24
+      lazy() [const -> function] public L26-27
+      config [const -> constant] public L29-32
+    esm/math.mjs [file] L1-12
+      add() [function] public L1-3
+      sub() [const -> function] public L5-5
+      mul() [function] public L7-9
+  lib [directory]
+    lib/app.js [file] L1-107
+      {import.1} [require -> import] private L10-11
+      {import.2} [require -> import] private L12-13
+      {import.3} [require -> import] private L14-15
+      createApp() [function] public +default-export L17-20
+      App [class] public L22-77
+        routes [property -> field] public L24-25
+        #started [property -> field] private L27-28
+        instances [property -> field] public +static L30-31
+        constructor() [constructor] public L33-39
+        use() [method] public L41-45
+        get started() [getter -> method] public L47-50
+        set name() [setter -> method] public L52-55
+        create() [method] public +static L57-60
+        listen() [method] public +async L62-67
+        #reset() [method] private L69-72
+        stop() [method] public L74-76
+      App.prototype.handle() [prototype method -> method] public L79-83
+      defaults() [const -> function] private L85-88
+      withDefaults() [const -> function] private L90-91
+      loadPlugin() [function] public L93-96
+      {block.1} [iife -> block] private L98-101
+      {block.2} [exports -> block] private L103-107
+    lib/plugins [directory]
+      lib/plugins/logger.js [file] L1-10
+        {exports} [module.exports -> constant] public L3-10
+          install() [method] public L6-9
+    lib/router.js [file] L1-38
+      Router [function -> class] public L3-6
+      Router.prototype.add() [prototype method -> method] public L8-11
+      Router.prototype.match() [prototype method -> method] public L13-15
+      helpers [const -> constant] public L17-24
+        normalise() [method] public L19-21
+        isRoot() [method] public L22-23
+      walk() [function] public +generator L26-29
+      {block.1} [exports -> block] private L31-32
+      createRouter() [exports -> function] public L33-36
+      {block.2} [exports -> block] private L37-38
+  package.json [document] L1-10

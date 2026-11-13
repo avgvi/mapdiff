@@ -1,0 +1,86 @@
+---
+source: crates/mapdiff-gitdiff/tests/scenarios.rs
+expression: report
+---
+## edit a body
+1 changed scope in 1 file, +2 -1
+./ +2 -1
+  pkg/ +2 -1
+    shapes.py modified +2 -1
+      Point modified +2 -1
+        distance() modified [body] +2 -1
+
+## change a signature
+1 changed scope in 1 file, +2 -2
+./ +2 -2
+  pkg/ +2 -2
+    shapes.py modified +2 -2
+      midpoint() modified [signature, body] +2 -2
+
+## rename a function
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  pkg/ +1 -1
+    shapes.py modified +1 -1
+      _helper() -> _average() renamed [signature] +1 -1
+
+## move a function to another file
+1 changed scope in 2 files, +6 -6
+./ +6 -6
+  pkg/ +6 -6
+    shapes.py modified -6
+      midpoint() moved out to pkg/util.py::midpoint() -4
+    util.py modified +6
+      midpoint() moved in from pkg/shapes.py::midpoint() +4 (text unchanged)
+
+## reformat only
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  pkg/ +1 -1
+    util.py modified +1 -1
+      clamp() modified [formatting] +1 -1
+
+## edit a comment only
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  pkg/ +1 -1
+    shapes.py modified +1 -1
+      Point modified [comments] +1 -1
+
+## add a field
+1 changed scope in 1 file, +1 -0
+./ +1
+  pkg/ +1
+    shapes.py modified +1
+      Point modified +1
+        __init__() modified +1
+          label added +1
+
+## change access
+1 changed scope in 1 file, +2 -0
+./ +2
+  pkg/ +2
+    shapes.py modified +2
+      __all__ added +1
+
+## delete a function
+1 changed scope in 1 file, +0 -7
+./ -7
+  pkg/ -7
+    shapes.py modified -7
+      _average() removed -5
+
+## rename a file
+0 changed scopes in 1 file, +0 -0
+./
+  pkg/
+    util.py -> tools.py renamed
+
+## move a function and edit it
+1 changed scope in 2 files, +8 -6
+./ +8 -6
+  pkg/ +8 -6
+    shapes.py modified +8
+      clamp() moved in from pkg/tools.py::clamp() [body, access] +6 (text changed +2 -2)
+    tools.py modified -6
+      clamp() moved out to pkg/shapes.py::clamp() [body, access] -6

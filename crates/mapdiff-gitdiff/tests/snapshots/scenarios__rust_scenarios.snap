@@ -1,0 +1,85 @@
+---
+source: crates/mapdiff-gitdiff/tests/scenarios.rs
+expression: report
+---
+## edit a body
+1 changed scope in 1 file, +2 -1
+./ +2 -1
+  src/ +2 -1
+    shapes.rs modified +2 -1
+      impl Point modified +2 -1
+        distance() modified [body] +2 -1
+
+## change a signature
+1 changed scope in 1 file, +2 -2
+./ +2 -2
+  src/ +2 -2
+    shapes.rs modified +2 -2
+      midpoint() modified [signature, body] +2 -2
+
+## rename a function
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  src/ +1 -1
+    shapes.rs modified +1 -1
+      helper() -> average() renamed [signature] +1 -1
+
+## move a function to another file
+1 changed scope in 2 files, +6 -5
+./ +6 -5
+  src/ +6 -5
+    shapes.rs modified -5
+      midpoint() moved out to src/util.rs::midpoint() -5
+    util.rs modified +6
+      midpoint() moved in from src/shapes.rs::midpoint() +5 (text unchanged)
+
+## reformat only
+1 changed scope in 1 file, +1 -3
+./ +1 -3
+  src/ +1 -3
+    util.rs modified +1 -3
+      clamp() modified [formatting] +1 -3
+
+## edit a comment only
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  src/ +1 -1
+    shapes.rs modified +1 -1
+      Point modified [comments] +1 -1
+
+## add a field
+1 changed scope in 1 file, +1 -0
+./ +1
+  src/ +1
+    shapes.rs modified +1
+      Point modified +1
+        label added +1
+
+## change access
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  src/ +1 -1
+    shapes.rs modified +1 -1
+      average() modified [signature, access] +1 -1
+
+## delete a function
+1 changed scope in 1 file, +0 -9
+./ -9
+  src/ -9
+    shapes.rs modified -9
+      average() removed -7
+
+## rename a file
+0 changed scopes in 1 file, +0 -0
+./
+  src/
+    util.rs -> tools.rs renamed
+
+## move a function and edit it
+1 changed scope in 2 files, +8 -7
+./ +8 -7
+  src/ +8 -7
+    shapes.rs modified +8
+      clamp() moved in from src/tools.rs::clamp() [body] +7 (text changed +1 -1)
+    tools.rs modified -7
+      clamp() moved out to src/shapes.rs::clamp() [body] -7

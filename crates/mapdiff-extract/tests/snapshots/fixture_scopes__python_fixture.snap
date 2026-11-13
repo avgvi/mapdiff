@@ -1,0 +1,79 @@
+---
+source: crates/mapdiff-extract/tests/fixture_scopes.rs
+expression: "tree(\"python\").render_text()"
+---
+. [directory]
+  pkg [directory]
+    pkg/__init__.py [file] L1-16
+      {import.1} [import] private L9-10
+      {import.2} [import] private L12-13
+      __all__ [assignment -> constant] public L15-16
+    pkg/_internal.py [file] L1-11
+      _clamp() [def -> function] private L5-7
+      {block.1} [statements -> block] private L10-11
+    pkg/models.py [file] L1-140
+      {import.1} [import] private L4-5
+      {import.2} [import] private L7-8
+      {import.3} [import] private L10-11
+      {import.4} [import] private L12-12
+      {import.5} [import] private L13-13
+      {block.1} [if -> block] private L15-17
+      {block.2} [try -> block] private L19-23
+      TWO_PI [assignment -> constant] public L25-26
+      default_unit [assignment -> constant] public L28-29
+      _registry [assignment -> constant] private L31-32
+      Number [type -> type_alias] public L34-35
+      Shape [class -> interface] public L38-40
+        area() [def -> method] public L40-40
+      Unit [class -> enum] public L43-47
+        METER [member -> variant] public L45-46
+        FOOT [member -> variant] public L47-47
+      Circle [class] public L50-105
+        sides [attribute -> field] public L54-55
+        kind [attribute -> field] public L57-58
+        __init__() [def -> constructor] public L60-66
+          radius [attribute -> field] public L62-63
+          unit [attribute -> field] public L64-64
+          __cache [attribute -> field] private L65-66
+        area() [def -> method] public L68-72
+        get diameter() [property -> method] public L74-77
+        set diameter() [setter -> method] public L79-83
+        unit_circle() [staticmethod -> method] public +static L85-88
+        from_diameter() [classmethod -> method] public L90-93
+        __repr__() [def -> method] public L95-97
+        _invalidate() [def -> method] private L99-101
+        Meta [class] public L103-105
+          ordering [attribute -> field] public L105-105
+      Ring [class] public L108-116
+        __init__() [def -> constructor] public L110-112
+          inner [attribute -> field] public L112-112
+        area() [def -> method] public L114-116
+      Point [class] public L119-125
+        x [attribute -> field] public L122-123
+        y [attribute -> field] public L124-124
+        tags [attribute -> field] public L125-125
+      scale() [def -> function] public L128-130
+      scale()#2 [def -> function] public L131-132
+      scale()#3 [def -> function] public L133-136
+      total() [def -> function] public L139-140
+    pkg/service.py [file] L1-77
+      {import.1} [import] private L3-3
+      {import.2} [import] private L4-4
+      {import.3} [import] private L6-6
+      {import.4} [import] private L7-7
+      total_area() [def -> function] public L10-12
+      logged() [def -> function] public L15-23
+        wrapper() [def -> function] private L17-21
+      biggest() [def -> function] public L26-30
+      fetch_shapes() [async def -> function] public +async L33-35
+      radii() [def -> function] public +generator L38-41
+      ShapeService [class] public L44-50
+        __init__() [def -> constructor] public L45-46
+          shapes [attribute -> field] public L46-46
+        refresh() [async def -> method] public +async L48-50
+      describe() [def -> function] public L53-55
+      describe()#2 [def -> function] public L58-59
+      {block.1} [if -> block] private L62-72
+        unit_area() [def -> function] public L65-67
+        unit_area()#2 [def -> function] public L71-72
+      {block.2} [if -> block] private L75-77

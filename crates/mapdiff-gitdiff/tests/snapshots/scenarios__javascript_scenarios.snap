@@ -1,0 +1,88 @@
+---
+source: crates/mapdiff-gitdiff/tests/scenarios.rs
+expression: report
+---
+## edit a body
+1 changed scope in 1 file, +2 -1
+./ +2 -1
+  lib/ +2 -1
+    shapes.js modified +2 -1
+      Point modified +2 -1
+        distance() modified [body] +2 -1
+
+## change a signature
+1 changed scope in 1 file, +2 -2
+./ +2 -2
+  lib/ +2 -2
+    shapes.js modified +2 -2
+      midpoint() modified [signature, body] +2 -2
+
+## rename a function
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  lib/ +1 -1
+    shapes.js modified +1 -1
+      helper() -> average() renamed [signature] +1 -1
+
+## move a function to another file
+1 changed scope in 2 files, +6 -5
+./ +6 -5
+  lib/ +6 -5
+    shapes.js modified -5
+      midpoint() moved out to lib/util.js::midpoint() -5
+    util.js modified +6
+      midpoint() moved in from lib/shapes.js::midpoint() +5 (text unchanged)
+
+## reformat only
+1 changed scope in 1 file, +1 -3
+./ +1 -3
+  lib/ +1 -3
+    util.js modified +1 -3
+      clamp() modified [formatting] +1 -3
+
+## edit a comment only
+1 changed scope in 1 file, +1 -1
+./ +1 -1
+  lib/ +1 -1
+    shapes.js modified +1 -1
+      Point modified [comments] +1 -1
+
+## add a field
+1 changed scope in 1 file, +1 -0
+./ +1
+  lib/ +1
+    shapes.js modified +1
+      Point modified +1
+        visible added +1
+
+## change access
+2 changed scopes in 1 file, +2 -1
+./ +2 -1
+  lib/ +2 -1
+    shapes.js modified +2 -1
+      average() modified [access]
+      {exports} modified [body] +1 -1
+      {block.1} added +1
+
+## delete a function
+2 changed scopes in 1 file, +0 -9
+./ -9
+  lib/ -9
+    shapes.js modified -9
+      average() removed -7
+      {block.1} removed -1
+
+## rename a file
+0 changed scopes in 1 file, +0 -0
+./
+  lib/
+    util.js -> tools.js renamed
+
+## move a function and edit it
+1 changed scope in 2 files, +8 -7
+./ +8 -7
+  lib/ +8 -7
+    shapes.js modified +8
+      clamp() moved in from lib/tools.js::clamp() [body, access] +7 (text changed +1 -1)
+    tools.js modified -7
+      clamp() moved out to lib/shapes.js::clamp() [body, access] -7

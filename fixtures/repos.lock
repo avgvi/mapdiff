@@ -1,0 +1,9 @@
+# Real repositories used as test data, one per language, pinned to a commit.
+# Fetch them into .cache/repos/ with scripts/fetch-repos.sh.
+# To move a pin, replace the commit and re-run the script.
+#
+# name      language    url                                      commit
+ripgrep     rust        https://github.com/BurntSushi/ripgrep    178cc027e283fd965cb72d0a7395b219eada170c
+zustand     typescript  https://github.com/pmndrs/zustand        9fed2eb2f3af672da9f7bf694b996df3831fc207
+express     javascript  https://github.com/expressjs/express     43fca52d28a422c8be48fd489cbd4f2d6152bab6
+httpx       python      https://github.com/encode/httpx          b5addb64f0161ff6bfe94c124ef76f6a1fba5254
