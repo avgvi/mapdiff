@@ -457,8 +457,7 @@ pub fn router(state: Arc<AppState>, ui_dir: Option<&Path>) -> Router {
 /// The page, built into the program when it was compiled after the page
 /// had been built (`cd ui && npm run build`).
 #[cfg(embedded_ui)]
-static PAGE: include_dir::Dir<'static> =
-    include_dir::include_dir!("$CARGO_MANIFEST_DIR/../../ui/dist");
+static PAGE: include_dir::Dir<'static> = include_dir::include_dir!("$MAPDIFF_PAGE_DIR");
 
 /// True when this program carries the page inside it.
 pub const HAS_PAGE: bool = cfg!(embedded_ui);

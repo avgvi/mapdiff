@@ -15,6 +15,7 @@
 </p></h4>
 
 <p align="center">
+  <a href="https://crates.io/crates/mapdiff"><img alt="crates.io version" src="https://img.shields.io/crates/v/mapdiff"></a>
   <a href="https://github.com/avgvi/mapdiff/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/avgvi/mapdiff/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Platforms: macOS and Linux" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-blue.svg">
   <img alt="Reads Rust, Python, TypeScript and JavaScript" src="https://img.shields.io/badge/reads-Rust%20%7C%20Python%20%7C%20TypeScript%20%7C%20JavaScript-informational.svg">
@@ -33,7 +34,55 @@ A diff shows you lines. `mapdiff` shows you the functions and types that changed
 
 ## Install
 
-From source, with Rust and Node installed:
+Pick one. Each installs the `mapdiff` command.
+
+### Homebrew
+
+macOS and Linux.
+
+```bash
+brew install avgvi/tap/mapdiff
+```
+
+### Shell installer
+
+A prebuilt binary for macOS or Linux, arm64 or x86_64.
+
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/avgvi/mapdiff/releases/latest/download/mapdiff-installer.sh | sh
+```
+
+### Cargo
+
+```bash
+cargo install mapdiff
+```
+
+That builds from source. To download the release binary instead:
+
+```bash
+cargo binstall mapdiff
+```
+
+### npm
+
+```bash
+npm install -g mapdiff-cli
+```
+
+The package is called `mapdiff-cli` on npm; the command it installs is still `mapdiff`.
+
+### Python tools
+
+```bash
+uv tool install mapdiff
+```
+
+With pipx it is `pipx install mapdiff`.
+
+### From source
+
+With Rust and Node installed:
 
 ```bash
 git clone https://github.com/avgvi/mapdiff && cd mapdiff

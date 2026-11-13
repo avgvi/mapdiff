@@ -1,0 +1,82 @@
+---
+title: Install
+description: Install mapdiff with Homebrew, the shell installer, Cargo, npm or uv, and add the optional language indexers.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Every channel installs the same `mapdiff` command.
+
+<Tabs syncKey="install">
+	<TabItem label="Homebrew">
+		macOS and Linux.
+
+		```bash
+		brew install avgvi/tap/mapdiff
+		```
+	</TabItem>
+	<TabItem label="Shell installer">
+		A prebuilt binary for macOS or Linux, arm64 or x86_64.
+
+		```bash
+		curl --proto '=https' --tlsv1.2 -LsSf https://github.com/avgvi/mapdiff/releases/latest/download/mapdiff-installer.sh | sh
+		```
+	</TabItem>
+	<TabItem label="Cargo">
+		```bash
+		cargo install mapdiff        # builds from source
+		cargo binstall mapdiff       # downloads the release binary
+		```
+	</TabItem>
+	<TabItem label="npm">
+		```bash
+		npm install -g mapdiff-cli
+		```
+
+		The package is called `mapdiff-cli` on npm. The command it installs is
+		still `mapdiff`.
+	</TabItem>
+	<TabItem label="Python tools">
+		```bash
+		uv tool install mapdiff      # or: pipx install mapdiff
+		```
+	</TabItem>
+</Tabs>
+
+Check it:
+
+```bash
+mapdiff --version
+```
+
+## Build from source
+
+You need Rust (1.88 or later) and Node (22 or later).
+
+```bash
+git clone https://github.com/avgvi/mapdiff && cd mapdiff
+cd ui && npm ci && npm run build && cd ..
+cargo install --path crates/mapdiff-cli
+```
+
+The second line builds the page. It has to come before the third, because the page is put inside the `mapdiff` binary: once installed, the binary needs nothing else and runs from any folder.
+
+## Optional: references by type
+
+Out of the box mapdiff finds what uses what by name. To also find methods called on a value (`client.send()`), install the indexer for your language. mapdiff uses whichever it finds.
+
+| Language | Indexer | Install |
+|---|---|---|
+| Rust | rust-analyzer | `rustup component add rust-analyzer` |
+| TypeScript, JavaScript | scip-typescript | `npm install -g @sourcegraph/scip-typescript` |
+| Python | scip-python | `npm install -g @sourcegraph/scip-python` |
+
+Then run `mapdiff index` once in a repository. See [languages and references](../../reference/languages/).
+
+## Uninstall
+
+Remove it the way you installed it: `brew uninstall mapdiff`, `cargo uninstall mapdiff`, `npm uninstall -g mapdiff-cli` or `uv tool uninstall mapdiff`.
+
+mapdiff keeps indexes in your cache folder (`~/Library/Caches/mapdiff` on macOS, `~/.cache/mapdiff` on Linux) and review marks in each repository's `.git/mapdiff/`.
+
+Next: the [quick start](../quick-start/).

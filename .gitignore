@@ -5,3 +5,4 @@ dist
 *.snap.new
 .DS_Store
 fixtures/rust/Cargo.lock
+/crates/mapdiff-server/page
