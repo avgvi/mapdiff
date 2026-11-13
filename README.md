@@ -148,7 +148,7 @@ Untick **Changes** and the map is a way to read a codebase, at four levels:
 
 Rust, Python, TypeScript and JavaScript.
 
-References are found by name out of the box. `mapdiff index` runs the language's own indexer (rust-analyzer, scip-typescript, scip-python) to add methods called on a value. Tests are left off the map, and a changed test still shows in a review. [More on languages](https://avgvi.github.io/mapdiff/reference/languages/).
+References are found by name out of the box. `mapdiff --index` also runs the language's own indexer (rust-analyzer, scip-typescript, scip-python) in the background, to add methods called on a value. Tests are left off the map, and a changed test still shows in a review. [More on languages](https://avgvi.github.io/mapdiff/reference/languages/).
 
 ## In the terminal
 
@@ -158,6 +158,14 @@ What the page shows is also a command, most with `--json`:
 mapdiff diff main...HEAD              # the change, by function and type
 mapdiff impact --commit HEAD          # unchanged code that uses what the commit altered
 mapdiff refs 'src/lib.rs::parse()'    # what uses a function, and what it uses
+```
+
+Each `mapdiff` you start runs until Ctrl-C. From any terminal:
+
+```bash
+mapdiff list          # what is running, and where
+mapdiff stop          # stop the one for this repository (--all for every one)
+mapdiff clean         # stop them all and remove everything mapdiff has written
 ```
 
 The rest are in the [command reference](https://avgvi.github.io/mapdiff/reference/cli/).

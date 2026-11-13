@@ -10,13 +10,16 @@ import {
   fetchMap,
   fetchMeta,
   fetchNode,
+  fetchReferences,
   fetchReviewed,
   saveReviewed,
+  startIndexing,
   type ChangeDetail,
   type ChangeSet,
   type Hit,
   type Meta,
   type NodeInfo,
+  type References,
   type Target,
   type Use,
 } from '../api'
@@ -38,6 +41,22 @@ import { ancestorsOf, buildScene, type Scene } from './scene.ts'
 import { SearchPalette } from './SearchPalette.tsx'
 import { Trace } from './Trace.tsx'
 import './map.css'
+
+/** How references are found, as the bar says it and as its tooltip explains it. */
+const REFERENCES: Record<References['by'], { name: string; means: string }> = {
+  name: {
+    name: 'by name',
+    means: 'What uses what is found from names and imports. A method called on a value is not seen.',
+  },
+  type: {
+    name: 'by type',
+    means: "What uses what is found from names and from the language's own index, which also sees methods called on a value.",
+  },
+  mixed: {
+    name: 'by type in part',
+    means: 'Some projects in this repository have an index and some do not. Where there is none, a method called on a value is not seen.',
+  },
+}
 
 const LEVELS: { level: Level; name: string; shows: string }[] = [
   { level: 'architecture', name: 'Architecture', shows: 'Directories, with files as small marks' },
@@ -152,12 +171,15 @@ export function MapView() {
   const [whole, setWhole] = useState<ReadonlySet<string>>(new Set())
   /** The before and after of the change being read, under the map. */
   const [dock, setDock] = useState(true)
+  const [references, setReferences] = useState<References | null>(null)
+  const [indexAsked, setIndexAsked] = useState(0)
 
   const arrival = useRef<Arrival>({ kind: 'fit' })
   const infos = useRef(new Map<string, Promise<NodeInfo>>())
   const hoverTimer = useRef(0)
   const wished = useRef(0)
   const selectionChain = useRef<string[]>([])
+  const wasIndexing = useRef(false)
 
   const scene = view?.scene ?? null
   const diff = view?.diff ?? null
@@ -189,6 +211,41 @@ export function MapView() {
       .then((keys) => setReviewed(new Set(keys)))
       .catch(() => {})
   }, [reloads])
+
+  const reload = useCallback(() => {
+    infos.current.clear()
+    forgetCode()
+    arrival.current = { kind: 'stay' }
+    setBusy(true)
+    setReloads((count) => count + 1)
+  }, [])
+
+  // How references are found. While an index is being made this is asked
+  // again, and when it is done the map is read again to gain what it found.
+  useEffect(() => {
+    let live = true
+    let timer = 0
+    const ask = () => {
+      fetchReferences(after.target)
+        .then((now) => {
+          if (!live) return
+          setReferences(now)
+          if (now.indexing) {
+            wasIndexing.current = true
+            timer = window.setTimeout(ask, 1500)
+          } else if (wasIndexing.current) {
+            wasIndexing.current = false
+            reload()
+          }
+        })
+        .catch(() => {})
+    }
+    ask()
+    return () => {
+      live = false
+      window.clearTimeout(timer)
+    }
+  }, [after, reloads, indexAsked, reload])
 
   // The address keeps the page and the comparison.
   useEffect(() => {
@@ -532,12 +589,10 @@ export function MapView() {
     }
   }, [hover, level, nodeInfo])
 
-  const reload = () => {
-    infos.current.clear()
-    forgetCode()
-    arrival.current = { kind: 'stay' }
-    setBusy(true)
-    setReloads((count) => count + 1)
+  const index = () => {
+    startIndexing()
+      .then(() => setIndexAsked((count) => count + 1))
+      .catch((problem: unknown) => setError(problem instanceof Error ? problem.message : String(problem)))
   }
 
   /** Another comparison, or none: the map is drawn afresh. */
@@ -655,6 +710,22 @@ export function MapView() {
         </div>
         <button type="button" onClick={() => setSearching(true)} title="Find a scope (/)">Search /</button>
         <button type="button" onClick={reload} title="Read the files again">Reload</button>
+        {references && (
+          <span className="map-refs" data-testid="map-refs" title={REFERENCES[references.by].means}>
+            References:{' '}
+            {references.indexing
+              ? `indexing… ${references.indexing.step.replace(/^running /, '').replace(/ in \.$/, '')} (${references.indexing.seconds} s)`
+              : REFERENCES[references.by].name}
+            {references.can_index && (
+              <button type="button" onClick={index} title="Run the language's own indexer, to also find methods called on a value. It can take minutes.">
+                Index
+              </button>
+            )}
+            {!references.indexing && references.notes.map((note) => (
+              <span key={note} className="map-refs-note">{note}</span>
+            ))}
+          </span>
+        )}
         <span
           className="map-stats"
           data-testid="map-stats"

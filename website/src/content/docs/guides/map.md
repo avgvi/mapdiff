@@ -18,6 +18,8 @@ Boxes are code: a directory holds files, a file holds types and functions, a typ
 | Solid, with an arrowhead | Uses |
 | Dashed, in another colour | Uses, but against the flow: this wire closes a loop |
 
+The bar above the map says how the wires were found: **References: by name** or **by type**. By name misses methods called on a value; **Index** next to it adds them. See [languages and references](../../reference/languages/).
+
 ## Levels
 
 ![The top level of a repository: directories as boxes, files as small marks, wires for what uses what](../../../../../docs/screens/architecture.png)

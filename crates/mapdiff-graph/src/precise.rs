@@ -336,27 +336,30 @@ fn inside(path: &str, directory: &str) -> bool {
             .is_some_and(|rest| rest.starts_with('/'))
 }
 
-/// Where indexes for a repository are kept: outside the repository, in the
-/// user's cache directory, under a name made from the repository's path.
-/// A caller can name another base directory, and so can `MAPDIFF_CACHE_DIR`.
-fn cache_directory(root: &Path, base: Option<&Path>) -> PathBuf {
-    let base = match (base, std::env::var_os("MAPDIFF_CACHE_DIR")) {
-        (Some(directory), _) => directory.to_path_buf(),
-        (None, Some(directory)) => PathBuf::from(directory),
-        (None, None) => {
-            let home = std::env::var_os("HOME")
-                .map(PathBuf::from)
-                .unwrap_or_else(std::env::temp_dir);
-            if cfg!(target_os = "macos") {
-                home.join("Library/Caches/mapdiff")
-            } else {
-                match std::env::var_os("XDG_CACHE_HOME") {
-                    Some(cache) => PathBuf::from(cache).join("mapdiff"),
-                    None => home.join(".cache/mapdiff"),
-                }
-            }
+/// The folder mapdiff keeps its own files in, outside any repository:
+/// the user's cache directory, or what `MAPDIFF_CACHE_DIR` names.
+pub fn cache_home() -> PathBuf {
+    if let Some(directory) = std::env::var_os("MAPDIFF_CACHE_DIR") {
+        return PathBuf::from(directory);
+    }
+    let home = std::env::var_os("HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(std::env::temp_dir);
+    if cfg!(target_os = "macos") {
+        home.join("Library/Caches/mapdiff")
+    } else {
+        match std::env::var_os("XDG_CACHE_HOME") {
+            Some(cache) => PathBuf::from(cache).join("mapdiff"),
+            None => home.join(".cache/mapdiff"),
         }
-    };
+    }
+}
+
+/// Where indexes for a repository are kept: outside the repository, in
+/// mapdiff's cache folder, under a name made from the repository's path.
+/// A caller can name another base directory.
+fn cache_directory(root: &Path, base: Option<&Path>) -> PathBuf {
+    let base = base.map_or_else(cache_home, Path::to_path_buf);
     let absolute = root.canonicalize().unwrap_or_else(|_| root.to_path_buf());
     let mut hasher = Xxh3::new();
     hasher.update(absolute.to_string_lossy().as_bytes());

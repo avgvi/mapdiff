@@ -608,3 +608,53 @@ async fn the_page_is_served_from_inside_the_program() {
     let reply = send(&repo, get("/some/where")).await;
     assert!(String::from_utf8_lossy(&reply.body).contains("<div id=\"root\">"));
 }
+
+#[tokio::test]
+async fn references_are_by_name_until_there_is_an_index() {
+    let repo = repo("references");
+    // No Cargo.toml: there is no project an indexer could run on.
+    let reply = send(&repo, get("/api/references")).await;
+    assert_eq!(reply.status, StatusCode::OK);
+    let references = reply.json();
+    assert_eq!(references["by"], "name");
+    assert_eq!(references["can_index"], false);
+    assert!(references["indexing"].is_null());
+
+    // With one, an index could add something, and none has been made.
+    repo.write(
+        "Cargo.toml",
+        "[package]\nname = \"sample\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    );
+    let references = send(&repo, get("/api/references")).await.json();
+    assert_eq!(references["by"], "name");
+    assert_eq!(references["can_index"], true);
+}
+
+#[tokio::test]
+async fn a_commit_that_was_written_out_cannot_be_indexed() {
+    let repo = repo("references-commit");
+    repo.write(
+        "Cargo.toml",
+        "[package]\nname = \"sample\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    );
+    repo.commit("a manifest");
+    let reply = send(&repo, get("/api/references?compare=true&commit=HEAD~1")).await;
+    assert_eq!(reply.status, StatusCode::OK);
+    let references = reply.json();
+    assert_eq!(references["by"], "name");
+    assert_eq!(references["can_index"], false);
+}
+
+#[tokio::test]
+async fn the_server_says_which_process_and_repository_it_is() {
+    let repo = repo("running");
+    let reply = send(&repo, get("/api/running")).await;
+    assert_eq!(reply.status, StatusCode::OK);
+    let running = reply.json();
+    assert_eq!(running["pid"], std::process::id());
+    assert!(
+        running["repo"]
+            .as_str()
+            .is_some_and(|root| root.ends_with(repo.path().file_name().unwrap().to_str().unwrap()))
+    );
+}

@@ -60,6 +60,10 @@ const walk = async () => {
   try {
   await settled()
   must(drawn() > 10, 'the map drew no boxes')
+  const references = () => document.querySelector('[data-testid=map-refs]')
+  for (let tries = 0; !references() && tries < 100; tries++) await wait(50)
+  must(references()?.textContent.startsWith('References: by '), 'the bar does not say how references are found')
+  lines.push(references().textContent.replace('Index', '').trim())
   lines.push(`package: ${stats().textContent}. ${stats().title}`)
 
   for (const [name, digit] of [['module', '3'], ['code', '4'], ['architecture', '1']]) {

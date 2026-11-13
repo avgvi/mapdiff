@@ -53,6 +53,11 @@ struct OpenArgs {
     /// Print the address without opening the browser.
     #[arg(long)]
     no_open: bool,
+    /// Also run each language's own indexer, for references that need
+    /// types. The map opens straight away and gains them when the indexer
+    /// is done.
+    #[arg(long)]
+    index: bool,
     /// A built copy of the page to serve instead of the one inside mapdiff.
     #[arg(long, value_name = "DIR", hide = true)]
     ui_dir: Option<PathBuf>,
@@ -169,6 +174,27 @@ enum Command {
     ///
     /// Runs until Ctrl-C.
     Serve(OpenArgs),
+    /// List the mapdiff servers that are running.
+    List {
+        /// Print the list as JSON.
+        #[arg(long)]
+        json: bool,
+    },
+    /// Stop the server of the repository you are in, the way Ctrl-C does.
+    Stop {
+        /// Stop every running server.
+        #[arg(long)]
+        all: bool,
+        /// A directory inside the repository.
+        #[arg(long, default_value = ".", conflicts_with = "all")]
+        repo: PathBuf,
+    },
+    /// Stop every server and remove everything mapdiff has written.
+    ///
+    /// That is the review marks and fetched pull requests in every
+    /// repository mapdiff was opened in, temporary copies of files, and
+    /// the cache folder with its indexes. Your code is not touched.
+    Clean,
     /// Print the raw syntax tree of one file. A development aid.
     #[command(hide = true)]
     DebugTree { file: PathBuf },
@@ -326,6 +352,9 @@ fn main() -> ExitCode {
         Command::Map(args) => map(&args),
         Command::Impact(args) => impact(&args),
         Command::Serve(open) => serve(open),
+        Command::List { json } => list(json),
+        Command::Stop { all, repo } => stop(all, &repo),
+        Command::Clean => clean(),
         Command::DebugTree { file } => debug_tree(&file),
         Command::DebugScip { file, symbol } => std::fs::read(&file)
             .map_err(|err| format!("cannot read {}: {err}", file.display()))
@@ -508,7 +537,7 @@ fn serve(open: OpenArgs) -> Result<(), String> {
     // Which page to open: the map, with the change that was asked for
     // drawn on it. With nothing asked for, the uncommitted changes when
     // there are any, and otherwise the map as it is.
-    let page = if let Some(number) = open.pr {
+    let (page, showing) = if let Some(number) = open.pr {
         // A pull request is fetched before the server starts.
         let fetched = git
             .fetch_pull_request(number)
@@ -517,20 +546,32 @@ fn serve(open: OpenArgs) -> Result<(), String> {
             Some(title) => println!("Pull request {number}: {title}"),
             None => println!("Pull request {number}, against {}", fetched.base_branch),
         }
-        format!(
-            "?mode=range&spec={}#map/changes",
-            query_value(&fetched.spec())
+        (
+            format!(
+                "?mode=range&spec={}#map/changes",
+                query_value(&fetched.spec())
+            ),
+            format!("pull request {number}"),
         )
     } else if let Some(revision) = &open.commit {
         let commit = git.resolve(revision).map_err(|err| err.to_string())?;
-        format!("?mode=commit&commit={commit}#map/changes")
+        (
+            format!("?mode=commit&commit={commit}#map/changes"),
+            format!("commit {}", commit.chars().take(7).collect::<String>()),
+        )
     } else if open.staged {
-        String::from("?mode=staged#map/changes")
+        (
+            String::from("?mode=staged#map/changes"),
+            String::from("staged"),
+        )
     } else if let Some(what) = &open.what {
         // Checked now, so that a mistyped revision is an error here and
         // not an empty page.
         Comparison::parse(&git, Some(what), false).map_err(|err| err.to_string())?;
-        format!("?mode=range&spec={}#map/changes", query_value(what))
+        (
+            format!("?mode=range&spec={}#map/changes", query_value(what)),
+            what.clone(),
+        )
     } else {
         let dirty = std::process::Command::new("git")
             .arg("-C")
@@ -538,22 +579,178 @@ fn serve(open: OpenArgs) -> Result<(), String> {
             .args(["status", "--porcelain"])
             .output()
             .is_ok_and(|output| !output.stdout.is_empty());
-        String::from(if dirty { "#map/changes" } else { "#map" })
+        if dirty {
+            (String::from("#map/changes"), String::from("uncommitted"))
+        } else {
+            (String::from("#map"), String::from("the map"))
+        }
     };
     let options = mapdiff_server::ServerOptions {
         repo: open.repo,
         port: open.port,
         ui_dir: open.ui_dir,
+        showing,
+        index: open.index,
     };
     let no_open = open.no_open;
+    let indexing = open.index;
     mapdiff_server::serve(options, |address| {
         let address = format!("{address}/{page}");
         println!("mapdiff is at {address}");
+        if indexing {
+            println!("Indexing in the background: the map gains references as it finishes.");
+        }
         println!("Press Ctrl-C to stop.");
         if !no_open {
             open_in_browser(&address);
         }
     })
+}
+
+/// A path as a person would write it: with `~` for the home folder.
+fn short_path(path: &str) -> String {
+    match std::env::var("HOME") {
+        Ok(home) if !home.is_empty() && path == home => String::from("~"),
+        Ok(home) if !home.is_empty() => match path.strip_prefix(&format!("{home}/")) {
+            Some(rest) => format!("~/{rest}"),
+            None => path.to_owned(),
+        },
+        _ => path.to_owned(),
+    }
+}
+
+/// A length of time in its two largest units: `45s`, `14m`, `2h 10m`.
+fn short_time(seconds: u64) -> String {
+    let (minutes, hours, days) = (seconds / 60, seconds / 3600, seconds / 86400);
+    if days > 0 {
+        format!("{days}d {}h", hours % 24)
+    } else if hours > 0 {
+        format!("{hours}h {}m", minutes % 60)
+    } else if minutes > 0 {
+        format!("{minutes}m")
+    } else {
+        format!("{seconds}s")
+    }
+}
+
+fn list(json: bool) -> Result<(), String> {
+    let running = mapdiff_server::running::list();
+    if json {
+        let text = serde_json::to_string_pretty(&running).map_err(|err| err.to_string())?;
+        println!("{text}");
+        return Ok(());
+    }
+    if running.is_empty() {
+        println!("no mapdiff is running");
+        return Ok(());
+    }
+    let rows: Vec<[String; 4]> = running
+        .iter()
+        .map(|each| {
+            [
+                short_path(&each.repo),
+                each.address(),
+                each.showing.clone(),
+                short_time(each.up()),
+            ]
+        })
+        .collect();
+    let titles = ["REPOSITORY", "ADDRESS", "SHOWING", "UP"];
+    let width = |column: usize| {
+        rows.iter()
+            .map(|row| row[column].chars().count())
+            .chain([titles[column].len()])
+            .max()
+            .unwrap_or(0)
+    };
+    let widths = [width(0), width(1), width(2)];
+    let line = |row: [&str; 4]| {
+        println!(
+            "{:<a$}  {:<b$}  {:<c$}  {}",
+            row[0],
+            row[1],
+            row[2],
+            row[3],
+            a = widths[0],
+            b = widths[1],
+            c = widths[2]
+        );
+    };
+    line(titles);
+    for row in &rows {
+        line([&row[0], &row[1], &row[2], &row[3]]);
+    }
+    Ok(())
+}
+
+fn stop(all: bool, repo: &Path) -> Result<(), String> {
+    let mut running = mapdiff_server::running::list();
+    let none = if all {
+        String::from("no mapdiff is running")
+    } else {
+        let git = mapdiff_gitdiff::open(repo).map_err(|err| err.to_string())?;
+        let root = git.root().to_string_lossy().into_owned();
+        running.retain(|each| each.repo == root);
+        format!("no mapdiff is running for {}", short_path(&root))
+    };
+    if running.is_empty() {
+        println!("{none}");
+        return Ok(());
+    }
+    let mut failed = Vec::new();
+    for each in &running {
+        match mapdiff_server::running::stop(each) {
+            Ok(()) => println!("stopped {} ({})", short_path(&each.repo), each.address()),
+            Err(why) => failed.push(format!("{}: {why}", each.address())),
+        }
+    }
+    if failed.is_empty() {
+        Ok(())
+    } else {
+        Err(failed.join("; "))
+    }
+}
+
+fn clean() -> Result<(), String> {
+    let cleaned = mapdiff_server::running::clean(Some(Path::new(".")));
+    for each in &cleaned.stopped {
+        println!("stopped {} ({})", short_path(&each.repo), each.address());
+    }
+    for repository in &cleaned.repositories {
+        let root = short_path(&repository.root.to_string_lossy());
+        if repository.marks {
+            println!("removed review marks from {root}");
+        }
+        if repository.refs > 0 {
+            println!(
+                "removed {} fetched pull request refs from {root}",
+                repository.refs
+            );
+        }
+    }
+    if cleaned.temporary > 0 {
+        println!("removed {} temporary copies of files", cleaned.temporary);
+    }
+    if let Some(cache) = &cleaned.cache {
+        println!("removed {}", short_path(&cache.to_string_lossy()));
+    }
+    let nothing = cleaned.stopped.is_empty()
+        && cleaned.repositories.is_empty()
+        && cleaned.temporary == 0
+        && cleaned.cache.is_none();
+    if nothing && cleaned.still_running.is_empty() {
+        println!("nothing to remove");
+    }
+    if cleaned.still_running.is_empty() {
+        Ok(())
+    } else {
+        Err(cleaned
+            .still_running
+            .iter()
+            .map(|(each, why)| format!("{} is still running: {why}", each.address()))
+            .collect::<Vec<_>>()
+            .join("; "))
+    }
 }
 
 /// Asks the system to open an address. Failing is fine: the address was
