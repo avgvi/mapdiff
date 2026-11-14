@@ -27,6 +27,12 @@ A diff shows you lines. `mapdiff` shows you the functions and types that changed
 
 ![A commit drawn on the map: changed functions in colour, the list of changes on the left, the selected function's callers lit, and its before and after under the map](docs/screens/review.png)
 
+
+
+https://github.com/user-attachments/assets/dbd9ef75-77ce-4bef-a012-ef031f09fc4c
+
+
+
 - **The change as code, not lines.** "This function's signature changed", "this type moved there", with before and after side by side.
 - **What it touches.** Unchanged code that uses something you removed or renamed is marked. A line diff has no place for it.
 - **A sensible order.** What is used comes before what uses it. One keypress per change.
