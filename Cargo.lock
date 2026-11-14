@@ -535,7 +535,7 @@ checksum = "5d15f86d12da44cd8d4ec3c73984537eb7f4cadcb9776a575a0a8a05ca11005c"
 
 [[package]]
 name = "mapdiff"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "clap",
  "mapdiff-core",
@@ -548,7 +548,7 @@ dependencies = [
 
 [[package]]
 name = "mapdiff-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "insta",
  "serde",
@@ -557,7 +557,7 @@ dependencies = [
 
 [[package]]
 name = "mapdiff-extract"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "ignore",
  "insta",
@@ -575,7 +575,7 @@ dependencies = [
 
 [[package]]
 name = "mapdiff-gitdiff"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "insta",
  "mapdiff-core",
@@ -589,7 +589,7 @@ dependencies = [
 
 [[package]]
 name = "mapdiff-graph"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "mapdiff-core",
  "mapdiff-extract",
@@ -606,7 +606,7 @@ dependencies = [
 
 [[package]]
 name = "mapdiff-server"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "axum",
  "include_dir",
@@ -624,7 +624,7 @@ dependencies = [
 
 [[package]]
 name = "mapdiff-testkit"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "matchit"

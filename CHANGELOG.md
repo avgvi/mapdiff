@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-11-13
 
 - **`mapdiff --index`** runs the language indexers in the background. The map opens straight away and gains references when they finish; after files change, they run again the next time the page is loaded.
 - **The bar above the map says how references are found:** by name, indexing, or by type, with an **Index** button and a note when an indexer is not installed.

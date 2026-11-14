@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.88"
 description = "Review a change on a map of your code: diffs by function and type, drawn with what they touch"
@@ -15,11 +15,11 @@ keywords = ["code-review", "diff", "visualization", "tree-sitter", "cli"]
 categories = ["development-tools", "command-line-utilities", "visualization"]
 
 [workspace.dependencies]
-mapdiff-core = { path = "crates/mapdiff-core", version = "0.1.0" }
-mapdiff-extract = { path = "crates/mapdiff-extract", version = "0.1.0" }
-mapdiff-gitdiff = { path = "crates/mapdiff-gitdiff", version = "0.1.0" }
-mapdiff-graph = { path = "crates/mapdiff-graph", version = "0.1.0" }
-mapdiff-server = { path = "crates/mapdiff-server", version = "0.1.0" }
+mapdiff-core = { path = "crates/mapdiff-core", version = "0.2.0" }
+mapdiff-extract = { path = "crates/mapdiff-extract", version = "0.2.0" }
+mapdiff-gitdiff = { path = "crates/mapdiff-gitdiff", version = "0.2.0" }
+mapdiff-graph = { path = "crates/mapdiff-graph", version = "0.2.0" }
+mapdiff-server = { path = "crates/mapdiff-server", version = "0.2.0" }
 mapdiff-testkit = { path = "crates/mapdiff-testkit" }
 
 serde = { version = "1", features = ["derive"] }
